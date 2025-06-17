@@ -1,40 +1,63 @@
-// @todo: Темплейт карточки
-const cardTemplate = document.querySelector('#card-template').content;
+import '../pages/index.css';
+import { initialCards } from './components/cards.js';
+import { createCard, deleteCard, toggleLike } from './components/card.js';
+import { openModal, closeModal, setModalListeners } from './components/modal.js';
+import {
+  cardTemplate, placesContainer, profileImage, profileName, profileJob,
+  editButton, addButton, popupEdit, popupAdd, popupImage,
+  popups, closeButtons, formEditProfile, formNewPlace,
+  nameInput, jobInput, placeNameInput, placeLinkInput,
+  popupImageElement, popupCaptionElement
+} from './components/constants.js';
 
-// @todo: DOM узлы
-const placesContainer = document.querySelector('.places__list');
+// Инициализация модальных окон
+setModalListeners(popups, closeButtons);
 
-// @todo: Функция создания карточки
+// Обработчики карточек
+const cardHandlers = {
+  handleDelete: deleteCard,
+  handleLike: toggleLike,
+  handleImageClick: (cardData) => {
+    popupImageElement.src = cardData.link;
+    popupImageElement.alt = cardData.name;
+    popupCaptionElement.textContent = cardData.name;
+    openModal(popupImage);
+  }
+};
 
-function createCard(initialCards, cardDelete) {
-  const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
-
-  const cardImage = cardElement.querySelector('.card__image');
-  const cardTitle = cardElement.querySelector('.card__title');
-  const deleteButton = cardElement.querySelector('.card__delete-button');
-
-  cardImage.src = initialCards.link;
-  cardImage.alt = initialCards.name;
-  cardTitle.textContent = initialCards.name;
-
-  deleteButton.addEventListener('click', () => {
-    cardDelete(cardElement);
-  });
-
-  return cardElement;
-}
-
-
-// @todo: Функция удаления карточки
-
-function deleteCard(cardElement) {
-  cardElement.remove();
-}
-
-// @todo: Вывести карточки на страницу
-
+// Добавление начальных карточек
 initialCards.forEach(cardData => {
-  const cardElement = createCard(cardData, deleteCard);
+  const cardElement = createCard(cardData, cardHandlers, cardTemplate);
   placesContainer.append(cardElement);
 });
 
+// Обработчики открытия попапов
+editButton.addEventListener('click', () => {
+  nameInput.value = profileName.textContent;
+  jobInput.value = profileJob.textContent;
+  openModal(popupEdit);
+});
+
+addButton.addEventListener('click', () => openModal(popupAdd));
+
+// Обработчики форм
+formEditProfile.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  profileName.textContent = nameInput.value;
+  profileJob.textContent = jobInput.value;
+  closeModal(popupEdit);
+});
+
+formNewPlace.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  
+  const newCard = {
+    name: placeNameInput.value,
+    link: placeLinkInput.value
+  };
+
+  const cardElement = createCard(newCard, cardHandlers, cardTemplate);
+  placesContainer.prepend(cardElement);
+  closeModal(popupAdd);
+  formNewPlace.reset();
+});
