@@ -16,40 +16,26 @@ function hideInputError(formElement, inputElement, config) {
 
 // Проверить валидность одного поля
 function checkInputValidity(formElement, inputElement, config) {
-  const value = inputElement.value.trim();
-  const nameRegex = /^[A-Za-zА-Яа-яЁё\s-]+$/;
   const isTouched = inputElement.dataset.touched === 'true';
+  const validity = inputElement.validity;
 
-  if (!value) {
-    if (isTouched) { // показываем ошибку только если поле уже трогали
-      showInputError(formElement, inputElement, 'Это поле обязательно для заполнения.', config);
-    } else {
-      hideInputError(formElement, inputElement, config);
-    }
+  if (!isTouched) {
+    hideInputError(formElement, inputElement, config);
+    return validity.valid;
+  }
+
+  if (validity.valueMissing) {
+    showInputError(formElement, inputElement, inputElement.dataset.errorMessageRequired || 'Это поле обязательно для заполнения.', config);
     return false;
   }
 
-  if (inputElement.name === 'name' || inputElement.name === 'place-name') {
-    if (value.length < inputElement.minLength || value.length > inputElement.maxLength) {
-      if (isTouched) {
-        showInputError(formElement, inputElement, inputElement.validationMessage, config);
-      }
-      return false;
-    }
-
-    if (!nameRegex.test(value)) {
-      const message = inputElement.dataset.errorMessage || 'Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы';
-      if (isTouched) {
-        showInputError(formElement, inputElement, message, config);
-      }
-      return false;
-    }
+  if (validity.tooShort || validity.tooLong) {
+    showInputError(formElement, inputElement, inputElement.validationMessage, config);
+    return false;
   }
 
-  if (inputElement.type === 'url' && !inputElement.validity.valid) {
-    if (isTouched) {
-      showInputError(formElement, inputElement, inputElement.validationMessage, config);
-    }
+  if (validity.typeMismatch || validity.patternMismatch) {
+    showInputError(formElement, inputElement, inputElement.dataset.errorMessage || inputElement.validationMessage, config);
     return false;
   }
 
@@ -76,14 +62,8 @@ function setEventListeners(formElement, config) {
   const buttonElement = formElement.querySelector(config.submitButtonSelector);
 
   inputList.forEach(inputElement => {
-
-    inputElement.addEventListener('focus', () => {
-      inputElement.dataset.touched = 'true'; // пометили как "тронутое"
-      checkInputValidity(formElement, inputElement, config);
-      toggleButtonState(inputList, buttonElement, formElement, config);
-    });
-    
     inputElement.addEventListener('input', () => {
+      inputElement.dataset.touched = 'true';
       checkInputValidity(formElement, inputElement, config);
       toggleButtonState(inputList, buttonElement, formElement, config);
     });
@@ -117,14 +97,6 @@ function clearValidation(formElement, config) {
   });
 
   toggleButtonState(inputList, buttonElement, formElement, config);
-}
-
-function renderLoading(isLoading, buttonElement, defaultText = 'Сохранить') {
-  if (isLoading) {
-    buttonElement.textContent = 'Сохранение...';
-  } else {
-    buttonElement.textContent = defaultText;
-  }
 }
 
 export { enableValidation, clearValidation };
