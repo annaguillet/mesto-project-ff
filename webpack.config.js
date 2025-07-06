@@ -8,7 +8,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.js',
-    publicPath: ''
+    publicPath: '', 
   },
   mode: 'development',
   devServer: {
@@ -25,29 +25,42 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.(png|svg|jpg|gif|woff(2)?|eot|ttf|otf)$/,
-        type: 'asset/resource'
+        test: /\.(png|svg|jpg|gif|woff2?|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/[name][ext]'
+        }
       },
       {
-        // применять это правило только к CSS-файлам
         test: /\.css$/,
-        // при обработке этих файлов нужно использовать
-        // MiniCssExtractPlugin.loader и css-loader
         use: [MiniCssExtractPlugin.loader, {
           loader: 'css-loader',
-          // добавьте объект options
           options: { importLoaders: 1 }
+        }, 'postcss-loader']
+      },
+      {
+        test: /\.html$/,
+        loader: 'html-loader',
+        options: {
+          sources: {
+            list: [
+              '...',
+              {
+                tag: 'img',
+                attribute: 'src',
+                type: 'src',
+              },
+            ],
+          },
         },
-          // Добавьте postcss-loader
-        'postcss-loader']
-      }, 
+      }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
-      scriptLoading: 'blocking', // Важно!
-      inject: 'body'             // Важно!
+      scriptLoading: 'blocking',
+      inject: 'body'
     }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin()

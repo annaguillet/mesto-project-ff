@@ -6,21 +6,16 @@ import {
   editButton, addButton, popupEdit, popupAdd, popupImage,
   popups, closeButtons, formEditProfile, formNewPlace,
   nameInput, jobInput, placeNameInput, placeLinkInput,
-  popupImageElement, popupCaptionElement
+  popupImageElement, popupCaptionElement, popupAvatar, formAvatar, avatarInput, avatarEditButton
 } from './components/constants.js';
 import { enableValidation, clearValidation } from './components/validation.js';
-import { getUserInfo, getInitialCards, addCard, editProfile } from './components/api.js';
-import { popupAvatar, formAvatar, avatarInput } from './components/constants.js';
-import { updateAvatar } from './components/api.js';
-import { avatarEditButton } from './components/constants.js';
+import { getUserInfo, getInitialCards, addCard, editProfile, updateAvatar } from './components/api.js';
 import { renderLoading } from './components/utils.js';
+import logoPath from '../images/logo.svg';
+import avatarPath from '../images/avatar.jpg';
+profileImage.style.backgroundImage = `url(${avatarPath})`;
 
-avatarEditButton.addEventListener('click', () => {
-  formAvatar.reset();
-  clearValidation(formAvatar, validationConfig);
-  openModal(popupAvatar);
-});
-
+// Настройки валидации — объяви ПЕРЕД использованием
 const validationConfig = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -30,19 +25,28 @@ const validationConfig = {
   errorClass: 'popup__error_visible'
 };  
 
+// Установка логотипа
+const logo = document.querySelector('.header__logo');
+logo.src = logoPath;
+
+// Открытие попапа смены аватара
+avatarEditButton.addEventListener('click', () => {
+  formAvatar.reset();
+  clearValidation(formAvatar, validationConfig);
+  openModal(popupAvatar);
+});
+
 let userId;
 
-// Загрузка пользователя и карточек одновременно
+// Загрузка данных
 Promise.all([getUserInfo(), getInitialCards()])
   .then(([userData, cards]) => {
-    // 1. Заполняем профиль
     profileName.textContent = userData.name;
     profileJob.textContent = userData.about;
     profileImage.src = userData.avatar;
     profileImage.alt = userData.name;
     userId = userData._id;
 
-    // 2. Добавляем карточки
     cards.forEach(cardData => {
       const cardElement = createCard(cardData, {
         userId,
@@ -58,9 +62,7 @@ Promise.all([getUserInfo(), getInitialCards()])
       placesContainer.append(cardElement);
     });
   })
-  .catch(err => {
-    console.error(`Ошибка загрузки данных: ${err}`);
-  });
+  .catch(err => console.error(`Ошибка загрузки данных: ${err}`));
 
 // Открытие попапа профиля
 editButton.addEventListener('click', () => {
