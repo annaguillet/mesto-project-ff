@@ -136,12 +136,11 @@ formAvatar.addEventListener('submit', (evt) => {
   renderLoading(true, submitButton);
 
   updateAvatar(avatarInput.value)
-    .then(userData => {
-      profileImage.src = userData.avatar;
-      profileImage.alt = userData.name;
-      closeModal(popupAvatar);
-      formAvatar.reset();
-    })
+  .then(userData => {
+    profileImage.style.backgroundImage = `url(${userData.avatar})`;
+    closeModal(popupAvatar);
+    formAvatar.reset();
+  })
     .catch(err => console.error(`Ошибка обновления аватара: ${err}`))
     .finally(() => {
       renderLoading(false, submitButton);
