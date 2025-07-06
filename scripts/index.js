@@ -12,8 +12,6 @@ import { enableValidation, clearValidation } from './components/validation.js';
 import { getUserInfo, getInitialCards, addCard, editProfile, updateAvatar } from './components/api.js';
 import { renderLoading } from './components/utils.js';
 import logoPath from '../images/logo.svg';
-import avatarPath from '../images/avatar.jpg';
-profileImage.style.backgroundImage = `url(${avatarPath})`;
 
 // Настройки валидации — объяви ПЕРЕД использованием
 const validationConfig = {
@@ -35,6 +33,8 @@ avatarEditButton.addEventListener('click', () => {
   clearValidation(formAvatar, validationConfig);
   openModal(popupAvatar);
 });
+
+updateAvatar(avatarInput.value)
 
 let userId;
 
