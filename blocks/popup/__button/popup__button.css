@@ -19,6 +19,18 @@
   cursor: pointer;
 }
 
+.popup__button_disabled {
+  background: #E5E5E5;
+  color: #B3B3B3;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Отключаем ховер для неактивной кнопки */
+.popup__button_disabled:hover {
+  background: #E5E5E5;
+}
+
 @media screen and (max-width: 568px) {
   .popup__button {
     font-size: 14px;

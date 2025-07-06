@@ -1,0 +1,7 @@
+.popup__content_type_confirm {
+  min-height: auto; 
+  padding: 34px 36px 36px; /* чуть меньше нижний отступ */
+  width: auto; /* убираем ограничение по ширине */
+  max-width: 280px; /* задайте столько, сколько нужно */
+  text-align: center;
+}

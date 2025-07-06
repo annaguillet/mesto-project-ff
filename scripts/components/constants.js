@@ -4,12 +4,14 @@ export const placesContainer = document.querySelector('.places__list');
 
 // Элементы профиля
 export const profileImage = document.querySelector('.profile__image');
+export const profileAvatar = document.querySelector('.profile__image');
 export const profileName = document.querySelector('.profile__title');
 export const profileJob = document.querySelector('.profile__description');
 
 // Кнопки
 export const editButton = document.querySelector('.profile__edit-button');
 export const addButton = document.querySelector('.profile__add-button');
+export const avatarEditButton = document.querySelector('.profile__avatar-edit');
 
 // Попапы
 export const popupEdit = document.querySelector('.popup_type_edit');
@@ -17,6 +19,11 @@ export const popupAdd = document.querySelector('.popup_type_new-card');
 export const popupImage = document.querySelector('.popup_type_image');
 export const popups = document.querySelectorAll('.popup');
 export const closeButtons = document.querySelectorAll('.popup__close');
+export const popupConfirm = document.querySelector('.popup_type_confirm');
+export const formConfirmDelete = popupConfirm.querySelector('.popup__form');
+export const popupAvatar = document.querySelector('.popup_type_avatar');
+export const formAvatar = popupAvatar.querySelector('.popup__form');
+export const avatarInput = popupAvatar.querySelector('.popup__input_type_avatar-url');
 
 // Формы
 export const formEditProfile = document.querySelector('.popup__form[name="edit-profile"]');
