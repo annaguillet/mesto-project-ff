@@ -25,7 +25,12 @@ function checkInputValidity(formElement, inputElement, config) {
   }
 
   if (validity.valueMissing) {
-    showInputError(formElement, inputElement, inputElement.dataset.errorMessageRequired || 'Это поле обязательно для заполнения.', config);
+    showInputError(
+      formElement,
+      inputElement,
+      inputElement.dataset.errorMessageRequired || 'Это поле обязательно для заполнения.',
+      config
+    );
     return false;
   }
 
@@ -35,7 +40,12 @@ function checkInputValidity(formElement, inputElement, config) {
   }
 
   if (validity.typeMismatch || validity.patternMismatch) {
-    showInputError(formElement, inputElement, inputElement.dataset.errorMessage || inputElement.validationMessage, config);
+    showInputError(
+      formElement,
+      inputElement,
+      inputElement.dataset.errorMessage || inputElement.validationMessage,
+      config
+    );
     return false;
   }
 
